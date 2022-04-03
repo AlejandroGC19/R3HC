@@ -1,13 +1,13 @@
-%------------------------------------------------------
-% Setup Lidar para trabajar con función callback
-% Author- Fernando Gómez Bravo 
-%07/07/2018
-%-------------------------------------------
+%{
+Setup Lidar para trabajar con función callback
+
+Alejandro Garrocho Cruz
+%}
 
 lidar=serial('COM4','baudrate',115200); 
 set(lidar,'InputBufferSize',40000);
 
-lidar.BytesAvailableFcnCount = 2134; %es el núemro de bytes recibidos en cada lectura
+lidar.BytesAvailableFcnCount = 2134; %es el número de bytes recibidos en cada lectura
 lidar.BytesAvailableFcnMode = 'byte';
 lidar.BytesAvailableFcn = @mi_callback; %Configuración función de callback
 fopen(lidar); %abre el puerto

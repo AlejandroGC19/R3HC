@@ -1,9 +1,11 @@
-%------------------------------------------
-% Convierte datos ASCII leidos del lidar en valores numericos
-% en esta versión se permite limitar la lectura a 2mts y se utiliza una
-% descodificación más efeciente y rápida: decodeSCIP_2.m
-% 07/07/18; 31/07/18
-%-------------------------------------------
+%{
+Convierte datos ASCII leidos del lidar en valores numéricos
+En esta versión se permite limitar la lectura a x metros y se utiliza una
+descodificación más efeciente y rápida: decodeSCIP_2.m
+31/07/18
+
+Alejandro Garrocho Cruz
+%}
 function [rangescan]=convierte_datos(data)
 
     i=find(data==data(13));
@@ -22,7 +24,7 @@ function [rangescan]=convierte_datos(data)
         %rangescan(k)=decodeSCIP(encodeddist(k,:)); %descodificación original
         rangescan(k)=decodeSCIP_2(encodeddist(k,:)); %Descodificación más rápida 
 
-        if (rangescan(k)>1000) %limitado a 2 mt.
+        if (rangescan(k)>1000) %Limitado a 1 mt.
             rangescan(k)=1000;
         end
 
