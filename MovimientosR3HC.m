@@ -1,14 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ejemplo de lectura del laser Hokuyo y representación de las medidas usando
-% manejadores. Hay que definir inicialmente 682, uno para cada medida
-% La lectura del Lidar se hace mediante la funcion de callback mi_callback
-% que lee los datos del buffer cuando se han recibido los bytes
-% correspondientes, guardarlos en la variable global rangescan y se encarga
-% de pedir una nueva lectura de datos
-% 
-%--------------------------------------------------
-% Alejandro Garrocho Cruz
-%--------------------------------------------------
+%{
+Lee y dibuja los datos del LIDAR, además de mover las patas que intervienen
+en el salto de acuerdo al obstáculo encontrado.
+
+--------------------------------------------------
+Alejandro Garrocho Cruz
+%}
 clear all
 clc
 
@@ -21,9 +17,9 @@ SetupLidar_callback %Inicializa el puerto configurando la función de callback
 
 
 %definición de los handles para representar las medidas del lidar
-%  handles(1:682) = plot(0,'Erasemode','xor'); 
-%  grid on
-%  axis ([-1000 1000 -1000 1000]);
+ handles(1:682) = plot(0,'Erasemode','xor'); 
+ grid on
+ axis ([-1000 1000 -1000 1000]);
  global tstart;
  global tiempo;
  
@@ -34,10 +30,6 @@ configureTerminator(handle.s,"CR/LF");
 flush(handle.s);
 handle.s.UserData = struct("Data",[],"Count",1);
 %------------------------------------------------
-% primera lectura del lidar
-% Al arrancar la función del callback el puerto se queda ocupado
-% constantemente ya que en la esa función se vuelve a mandar la petición de
-% datos al lidar
  fprintf(lidar,'GD0044072500'); %pide al lidar entregar lectura 
  pause(1);
 %----------------------
@@ -51,7 +43,7 @@ duracion=30;
 write(handle.s,2,'uint8');
         
 while (tiempo<duracion) % el experimento tiene una duracion determinada
-    %plotear_laser_handles(rangescan,handles)
+    plotear_laser_handles(rangescan,handles)
     
     if (N_obs == N_obs_saltados)
         while (final_obs ==1000 || inicio_obs == 1000)

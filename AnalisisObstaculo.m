@@ -1,23 +1,20 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ejemplo de lectura del laser Hokuyo y representación de las medidas usando
-% manejadores. Hay que definir inicialmente 682, uno para cada medida
-% La lectura del Lidar se hace mediante la funcion de callback mi_callback
-% que lee los datos del buffer cuando se han recibido los bytes
-% correspondientes, guardarlos en la variable global rangescan y se encarga
-% de pedir una nueva lectura de datos
-% 
-%--------------------------------------------------
-% F Gomez Bravo 07/07/18
-%--------------------------------------------------
+%{
+Lee y dibuja los datos del LIDAR, además de calcular las dimensiones del
+obstáculo con el dato central del sensor.
+
+--------------------------------------------------
+Alejandro Garrocho Cruz
+--------------------------------------------------
+%}
+
 clear all
 clc
 
-global rangescan %variable que contiene las medidas del lidar se actualiza 
-                 % en la función callback mi_callback.m 
+global rangescan %variable que contiene las medidas del lidar se actualiza en la función callback mi_callback.m 
 
-%-----------------------------------------------------------------------------
+%%
 SetupLidar_callback %Inicializa el puerto configurando la función de callback
-%---------------------------------------------------------------------------
+%%
 
 
 %definición de los handles para representar las medidas del lidar
@@ -28,19 +25,20 @@ SetupLidar_callback %Inicializa el puerto configurando la función de callback
  global tiempo;
  
  tstart=tic;
-%------------------------------------------------
+%%
 handle.s = serialport("COM5",9600,"Timeout", 5);
 configureTerminator(handle.s,"CR/LF");
 flush(handle.s);
 handle.s.UserData = struct("Data",[],"Count",1);
-%------------------------------------------------
-% primera lectura del lidar
-% Al arrancar la función del callback el puerto se queda ocupado
-% constantemente ya que en la esa función se vuelve a mandar la petición de
-% datos al lidar
+%%
+%{
+PRIMERA LECTURA DEL LIDAR
+Al arrancar la función del callback el puerto se queda ocupado constantemente ya que en la esa función se vuelve a mandar la petición de datos al lidar
+%}
+
  fprintf(lidar,'GD0044072500'); %pide al lidar entregar lectura 
  pause(1);
-%----------------------
+%%
 matriz_datos=[];
 distancia=1000; 
 distancia_min=1000;
@@ -48,7 +46,7 @@ distancia_real=1000;
 obs1=0;
 
 while (tiempo<60) % el experimento dura 60 SEG
-    %plotear_laser_handles(rangescan,handles)
+    plotear_laser_handles(rangescan,handles)
     if (rangescan(341) < 450 && rangescan(341) > 250) %Encuentra obstaculo
         distancia=rangescan(341);
         write(handle.s,1,'uint8');
@@ -80,15 +78,10 @@ while (tiempo<60) % el experimento dura 60 SEG
     matriz_datos=[matriz_datos;rangescan];
 end
 
-%%%%%%save 'SaltaObstaculo.dat' matriz_datos '-ascii'
+%save 'SaltaObstaculo.dat' matriz_datos '-ascii'
 
-%----------------------
-% Se cierra el puerto para que no se quede funcionando la función 
-% de calback
+%%
+% Se cierra el puerto para que no se quede funcionando la función de callback
  cerrar_puerto  
  clear all
  clc
-% DisconnectLidar
-%--------------------------
-%Cálculo del diferencial de tiempo
-%%%%%%% dt=tiempo(2:end)-tiempo(1:end-1);
